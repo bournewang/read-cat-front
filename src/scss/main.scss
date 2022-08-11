@@ -1,0 +1,117 @@
+.wrapper {
+  height: 100%;
+  overflow-y: hidden;
+  background: linen;
+  font-family: system-ui, sans-serif !important;
+  font-size: 16px !important;
+  #upper-row{
+    input{width: 80%;}
+    margin: auto;
+  }
+  .websites{
+    text-wrap: normal;
+    overflow-wrap: break-word;
+    //overflow-x: hidden;
+    .website{
+      padding-left: 1em;
+    }
+  }
+
+  #body-row {
+    height: 90vh;
+    border: 1px solid lightgray;
+
+    .date-range{
+      .date-item{
+        &.active{background: lightskyblue;}
+        padding: .5em .2em;
+        .date{
+          padding: .2em;
+          font-size: .8em;
+          font-weight: 700;
+        }
+        .count{
+          color: darkred;
+          float: right;
+          display: block;
+        }
+        border-right: 1px solid lightgray;
+      }
+    }
+
+    > div {
+      //border: 1px solid black;
+      overflow-x: hidden;
+      height: 100%;
+    }
+
+    .articles {
+      height: 100%;
+      overflow-y: scroll;
+      border-right: 1px solid lightgray;
+
+      .article {
+        padding: .2em;
+        border-bottom: 1px solid lightgray;
+        margin-right: 0.2em;
+        &.active{
+          background: firebrick;
+          color: wheat;
+          .date {
+            color: lightgray;
+          }
+          .word_count{
+            background: lightpink;
+            border-radius: .5em;
+            padding: 0 .2em;
+          }
+        }
+        .title{
+          //font-size: 15px;
+          font-family: system-ui, sans-serif !important;
+          font-weight: 500;
+        }
+        .date {
+          font-size: .8em;
+          color: gray;
+          //display: block;
+        }
+        .word_count{
+          font-size: .8em;
+          color: darkred;
+        }
+        .highlight{
+          font-size: .9em;
+          background: yellow;
+          display: block;
+        }
+      }
+    }
+
+    .col-article-content{
+      #article-title{
+        font-size: 1.5em;
+        font-family: system-ui, sans-serif;
+        font-weight: 500;
+      }
+      #article-content{
+        font-size: 1.2em;
+      }
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+    }
+    .loading{
+      text-align: center;
+      margin-top: 40%;
+    }
+  }
+
+  #article-save-btn{
+    position: fixed;
+    right: 30vw;
+    bottom: 5em;
+  }
+}

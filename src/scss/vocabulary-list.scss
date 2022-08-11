@@ -1,0 +1,21 @@
+#left-column{height: 80vh;overflow-y: scroll;}
+ul.word-list {height1: 80vh; width: 100%; list-style: none;}
+#content1{height: 80vh; margin-top: 6vh;padding: 0.5em;}
+/*#content > div{width: 100%;}*/
+/*#meanings{width: 100%; overflow-y: scroll;border: 2px solid darkred;background: lightblue;padding: 0.5em;}*/
+#definition, .examples{overflow-y: scroll; padding: .5em; border-style: ridge; border-width: 0.3em; border-radius: 0.5em; background1: lightyellow;}
+#definition{max-height: 30vh;}
+.examples {max-height: 50vh;}
+#all div:nth-child(n+11) {display: none;}
+span.delete{text-decoration: line-through;}
+span.current{background: #4cae4c; color: whitesmoke;}
+span.phonetic {padding-right: 1em;}
+span.partOfSpeech {color: darkred;}
+.synonyms {color: darkcyan;}
+.reference{text-align: right;font-size:.8em; font-style: italic;}
+em{font-style: normal; background: yellow;}
+.example {font-style: italic;text-decoration: underline;}
+audio{display: none;}
+.play-btn{width: 1em; height: 1em;}
+.play-btn:hover{width: 1.1em; height: 1.1em;}
+.examples .play-btn{margin-top: 5px;margin-right: 5px;}
