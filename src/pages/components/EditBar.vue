@@ -27,20 +27,8 @@
             transform="translate(3 3)"></path>
       </svg>
     </button>
-    <button class="jr-text-color" title="Text color (Ctrl+Shift+c)" @click="$emit('jr-text-color')">
-      <svg viewBox="0 0 15 15">
-        <path
-            d="M7,0 L5,0 L0.5,12 L2.5,12 L3.62,9 L8.37,9 L9.49,12 L11.49,12 L7,0 L7,0 Z M4.38,7 L6,2.67 L7.62,7 L4.38,7 L4.38,7 Z"
-            transform="translate(3 1)"></path>
-      </svg>
-    </button>
-    <button class="jr-highlight-color" title="Highlight color (Ctrl+Shift+h)" @click="$emit('jr-highlight-color')">
-      <svg viewBox="0 0 15 15">
-        <path
-            d="M6,5 L2,9 L3,10 L0,13 L4,13 L5,12 L5,12 L6,13 L10,9 L6,5 L6,5 Z M10.2937851,0.706214905 C10.6838168,0.316183183 11.3138733,0.313873291 11.7059121,0.705912054 L14.2940879,3.29408795 C14.6839524,3.68395241 14.6796852,4.32031476 14.2937851,4.7062149 L11,8 L7,4 L10.2937851,0.706214905 Z"
-            transform="translate(3 1)"></path>
-      </svg>
-    </button>
+
+
     <button class="jr-remove-styles" title="Clear formatting (Ctrl+\)" @click="$emit('jr-remove-styles')">
       <svg viewBox="0 0 15 15">
         <path
@@ -56,9 +44,23 @@
       </svg>
     </button>
     <div class="jr-color-picker jr-text-picker" :style="show_text_colors ? 'display:block' : 'display: none;'">
+      <button class="jr-text-color" title="Text color (Ctrl+Shift+c)" @click="$emit('jr-text-color1')">
+        <svg viewBox="0 0 15 15">
+          <path
+              d="M7,0 L5,0 L0.5,12 L2.5,12 L3.62,9 L8.37,9 L9.49,12 L11.49,12 L7,0 L7,0 Z M4.38,7 L6,2.67 L7.62,7 L4.38,7 L4.38,7 Z"
+              transform="translate(3 1)"></path>
+        </svg>
+      </button>
       <div v-for="(color) in text_colors" :key="color" class="jr-color-swatch" :class="'jr-highlight-' + color" :data-color="color" @click="$emit('text-color', color)"></div>
     </div>
     <div class="jr-color-picker jr-highlight-picker" :style="show_bg_colors ? 'display:block' : 'display: none;'">
+      <button class="jr-highlight-color" title="Highlight color (Ctrl+Shift+h)" @click="$emit('jr-highlight-color1')">
+        <svg viewBox="0 0 15 15">
+          <path
+              d="M6,5 L2,9 L3,10 L0,13 L4,13 L5,12 L5,12 L6,13 L10,9 L6,5 L6,5 Z M10.2937851,0.706214905 C10.6838168,0.316183183 11.3138733,0.313873291 11.7059121,0.705912054 L14.2940879,3.29408795 C14.6839524,3.68395241 14.6796852,4.32031476 14.2937851,4.7062149 L11,8 L7,4 L10.2937851,0.706214905 Z"
+              transform="translate(3 1)"></path>
+        </svg>
+      </button>
       <div v-for="(color) in highlight_colors" :key="color" class="jr-color-swatch" :class="'jr-highlight-' + color" :data-color="color" @click="$emit('hightlight-color', color)"></div>
     </div>
   </div>
@@ -69,12 +71,13 @@
 // import axios from 'axios';
 export default {
   props: {
-    show_text_colors: {type: Boolean, default: false},
-    show_bg_colors: {type: Boolean, default: false}
+    show_text_colors: {type: Boolean, default: true},
+    show_bg_colors: {type: Boolean, default: true}
   },
   data() {
     return {
-      text_colors: ["white",
+      text_colors: [
+          "white",
         "black",
         "yellow",
         "green",
@@ -85,6 +88,8 @@ export default {
         "orange",
       ],
       highlight_colors: [
+          "white",
+          "black",
         "yellow",
         "green",
         "blue",

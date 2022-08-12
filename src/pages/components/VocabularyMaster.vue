@@ -50,7 +50,6 @@
 <!--              <span v-html="sentence.innerHTML"></span>-->
 <!--          </div>-->
 <!--        </div>-->
-        COMPONENT examples:
         <examples :word="current_word"></examples>
       </div>
 

@@ -109,8 +109,8 @@ export default {
       show_edit_bar: false,
       edit_bar_pos: "",
       highlighter: null,
-      show_text_colors: false,
-      show_bg_colors: false,
+      show_text_colors: true,
+      show_bg_colors: true,
       current_user: {},
       eng_sites: [
         "https://www.telegraph.co.uk/",
@@ -305,11 +305,11 @@ export default {
         this.show_edit_bar = false
         return
       }
-      this.show_text_colors = false
-      this.show_bg_colors = false
+      // this.show_text_colors = false
+      // this.show_bg_colors = false
       console.log("=== mouse up, selection: " + sel)
       const r = rangy.getSelection().nativeSelection.getRangeAt(0).getBoundingClientRect();
-      const top = (r.top + document.defaultView.pageYOffset - 60) + 'px';
+      const top = (r.top + document.defaultView.pageYOffset - 60 - 30) + 'px';
       const left = (r.left + r.width / 2 + document.defaultView.pageXOffset - 105) + 'px';
 
       this.show_edit_bar = true
