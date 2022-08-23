@@ -8,13 +8,15 @@
       <div class="head">
 <!--        <span id="title" class="mt-1 mb-2 ">Vocabulary Master</span>-->
         <button @click="click_autoplay" :class="autoplay ? 'button-default' : 'button-primary'" title="autoplay">Autoplay</button>
+        <label for="dict_en"><input id="dict_en" type="radio" name="dict_lang" :v-model="dict_lang" value="en">EN</label>
+        <label for="dict_zh"><input id="dict_zh" type="radio" name="dict_lang" :v-model="dict_lang" value="zh">ZH</label>
 <!--        <button @click="minimize_window">&nbsp;-&nbsp;</button>-->
       </div>
       <div v-if="current_selected == current_sentence && current_sentence">
         <hr>
         <div class="mt-2">
           <img :src="audio_icon_url" class="play-btn" @click="sentence_play()">
-          {{ current_sentence }}
+          {{ current_sentence }} ({{word_count}} words)
         </div>
         <div v-if="trans_text" id="trans_text" class="">
           <hr>
@@ -26,31 +28,13 @@
         <div>{{ current_word }} <img :src="audio_icon_url" alt="" class="play-btn" @click.stop="word_play">
           <span v-if="trans_word">{{ trans_word }}</span>
         </div>
-        <div v-for="(phonetic) in phonetics" :key="phonetic">
-          <span class='phonetic'>{{ phonetic.text }}</span>
-          <img v-if="phonetic.audio" :src="audio_icon_url" alt="" class="play-btn"
-               @click.stop="word_play(phonetic.audio)"/>
-        </div>
-        <div id="meanings" v-if="meanings">
-          <div class='meaning' v-for="(meaning) in meanings" :key="meaning">
-            <span class='partOfSpeech'>{{meaning.partOfSpeech}}</span><br/>
-            <template v-for="(definition,i) in meaning.definitions" :key="i">
-              <div class='definition'>{{definition.definition}}</div>
-              <!--              <div class='example'>{{definition.example}}</div>-->
-              <div class="synonyms">{{definition.synonyms.slice(0,5).join(', ')}}</div>
-            </template>
-          </div>
-        </div>
+        <div id="meanings" v-if="dict_html" v-html="dict_html"></div>
 
-<!--        <div id="examples" v-if="examples_en.length>0">-->
-<!--          <hr>-->
-<!--          <span>Examples: </span>-->
-<!--          <div v-for="(sentence) in examples_en" :key="sentence.textContent">-->
-<!--              <img :src="audio_icon_url" class="play-btn" @click="sentence_play(sentence.textContent)">-->
-<!--              <span v-html="sentence.innerHTML"></span>-->
-<!--          </div>-->
-<!--        </div>-->
         <examples :word="current_word"></examples>
+      </div>
+      <div v-if="error">
+        <hr>
+        <span class="text text-bg-danger">{{error}}</span>
       </div>
 
       <audio id="word-audio" controls :src="word_audio_url" :autoplay="autoplay"></audio>
@@ -60,9 +44,9 @@
 </template>
 
 <script>
-import axios from "axios";
+// import axios from "axios";
 import transApi from "@/api/translate";
-import Examples from "@/pages/components/Examples";
+import Examples from "@/pages/components/ExamplesPanel";
 // import jsonp from "jsonp";
 // import BaiduTransApiSign from "../../api/baidu-trans-api-sign";
 export default {
@@ -78,9 +62,13 @@ export default {
       phonetics: [],
       trans_text: null,
       trans_word: null,
+      word_count: null,
+      dict_html: null,
       audio_icon_url: '/imgs/music-32.png',
       autoplay: false,
+      dict_lang: "en",
       // minimize: false,
+      error: null,
       maximize: true
     }
   },
@@ -100,32 +88,54 @@ export default {
         console.log("not a string selected, or nothing selected")
         return
       }
-      that.current_selected = string
-      if (string.indexOf(" ") > 0) {
+      that.current_selected = string.replace(/\[[A-Za-z0-9]+\]/g,"")
+      if (that.current_selected.indexOf(" ") > 0) {
         //  sentences selected
-        that.current_sentence = string
-        that.translate(string)
+        console.log("selected length: "+that.current_selected.length )
+        that.word_count = that.current_selected.split(" ").length
+        if (that.word_count > 100) {
+          that.error = "Sentences selected too long!"
+          that.trans_text = null
+        } else {
+          that.translate(that.current_selected)
+          that.error = null
+        }
+        that.current_sentence = that.current_selected
         that.current_word = null
         // if (that.autoplay)
         //   that.sentence_play()
       }else {
         that.current_sentence = null
         that.trans_text = null
-        that.current_word = string
+        that.current_word = that.current_selected
         that.trans_word = null
         that.phonetics = []
         that.meanings = []
         that.examples_en = []
+        that.dict_zh_html = null
+        that.error = null
         // axios.get("https://vocabulary-master.local/translate.php?query="+that.current_word)
         transApi.translate(that.current_word).then(function(res){
           that.trans_word = res.data
         })
-        axios.get("https://api.dictionaryapi.dev/api/v2/entries/en/" + that.current_word)
-            .then(function (res) {
-              var exp = res.data[0];
-              that.phonetics = exp.phonetics
-              that.meanings = exp.meanings
-            })
+        let req = null
+        if (that.dict_lang == "en") {
+          req = transApi.dictEn(that.current_word)
+        }else{
+          req = transApi.dictZh(that.current_word)
+        }
+        req.then(res => {
+          that.dict_html = res.data
+        })
+        // transApi.examples(that.current_word).then(res => {
+        //   that.examples_en = res.data
+        // })
+        // axios.get("https://api.dictionaryapi.dev/api/v2/entries/en/" + that.current_word)
+        //     .then(function (res) {
+        //       var exp = res.data[0];
+        //       that.phonetics = exp.phonetics
+        //       that.meanings = exp.meanings
+        //     })
         // axios.get("https://vocabulary-master.local/examples.php?word=" + that.current_word)
 
       }

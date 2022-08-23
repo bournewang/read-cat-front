@@ -2,7 +2,8 @@
   height: 100%;
   overflow-y: hidden;
   background: linen;
-  font-family: system-ui, sans-serif !important;
+  //font-family: system-ui, sans-serif !important;
+  font-family: Roboto, Helvetica, Arial, sans-serif;
   font-size: 16px !important;
   #upper-row{
     input{width: 80%;}
@@ -21,6 +22,10 @@
     height: 90vh;
     border: 1px solid lightgray;
 
+    .column{
+      border-right: 1px solid lightgray;
+    }
+
     .date-range{
       .date-item{
         &.active{background: lightskyblue;}
@@ -35,7 +40,7 @@
           float: right;
           display: block;
         }
-        border-right: 1px solid lightgray;
+        //border-right: 1px solid lightgray;
       }
     }
 
@@ -48,7 +53,7 @@
     .articles {
       height: 100%;
       overflow-y: scroll;
-      border-right: 1px solid lightgray;
+      //border-right: 1px solid lightgray;
 
       .article {
         padding: .2em;
@@ -89,6 +94,7 @@
     }
 
     .col-article-content{
+      position: relative;
       #article-title{
         font-size: 1.5em;
         font-family: system-ui, sans-serif;
@@ -96,6 +102,9 @@
       }
       #article-content{
         font-size: 1.2em;
+        img{
+          max-width: 100%;
+        }
       }
     }
 
@@ -113,5 +122,11 @@
     position: fixed;
     right: 30vw;
     bottom: 5em;
+  }
+
+  #article-del-btn{
+    position: absolute;
+    top: 3em;
+    right: 1em;
   }
 }

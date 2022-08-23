@@ -18,8 +18,8 @@ function user(){
 function clearUser(){
     return localStorage.removeItem("user")
 }
-function login(email, password) {
-    return request.post("/api/auth/login", {email, password})
+function login(username, password) {
+    return request.post("/api/login", {username, password})
 }
 
 function logout(){
@@ -27,8 +27,8 @@ function logout(){
     clearUser()
 }
 
-function register(email, password) {
-    return request.post("/api/auth/register", {email, password})
+function register(username, password) {
+    return request.post("/api/register", {username, password})
 }
 
 function clearToken(){

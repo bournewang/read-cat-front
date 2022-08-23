@@ -14,7 +14,7 @@
                 <!--                <p class="text-muted mb-4">Create a login split page using Reactjs & Bootstrap 5.</p>-->
                 <form>
                   <div class="mb-3">
-                    <input id="inputEmail" v-model="email" type="email" placeholder="Email address" required="" autofocus=""
+                    <input id="inputEmail" v-model="username" type="username" placeholder="Email address" required="" autofocus=""
                            class="form-control rounded-pill border-0 shadow-sm px-4"/>
                   </div>
                   <div class="mb-3">
@@ -53,19 +53,19 @@ export default {
   name: "LoginPage",
   data(){
     return {
-      email: null,
+      username: null,
       password: null
     }
   },
   methods: {
     login(){
-      console.log("email: "+this.email+", password: "+this.password)
+      console.log("username: "+this.username+", password: "+this.password)
       var that = this
-      loginApi.login(this.email, this.password).then(res => {
+      loginApi.login(this.username, this.password).then(res => {
         console.log(res.data)
         console.log("set token: "+res.data.id_token)
         loginApi.setToken(res.data.id_token)
-        loginApi.setUser({email: that.email})
+        loginApi.setUser({username: that.username})
         that.$router.push("/")
       })
     },

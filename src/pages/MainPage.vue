@@ -1,15 +1,22 @@
 <template>
   <div class="wrapper container-fluid">
-    <div class="row" id="upper-row">
+    <div class="row pt-3" id="upper-row">
       <div class="col-3"><h1 class="title">Read Cat</h1></div>
-      <div class="col-6 pt-3" >
+      <div class="col-6" >
         <input type="text" v-model="fetch_url" placeholder="Copy the article url here, and click [Fetch] button">
-        <button class="btn btn-sm btn-primary m-lg-2" @click="fetchArticle">Fetch</button>
+        <button class="btn btn-sm btn-primary" @click="fetchArticle">Fetch</button>
         <span v-if="fetching">Fetching ...</span>
       </div>
-      <div class="col-3 pt-3">
+      <div class="col-3">
         {{current_user.email}}
         <button class="btn btn-sm btn-danger" @click="logout">Logout</button>
+
+        <button @click="$router.push('/vocabulary-list')">Vocabulary List</button>
+
+        <select @change="loadWordsList" v-model="current_list_type">
+          <option v-for="type in list_types" :value="type" :key="type">{{type}}</option>
+        </select>
+        <button @click="mark">Mark</button>
       </div>
     </div>
     <div class="row websites">
@@ -19,7 +26,7 @@
       </div>
     </div>
     <div class="row" id="body-row">
-      <div class="col-1 date-range">
+      <div class="col-1 date-range column">
         <!--        show the last week-->
 <!--        <div @click="loadList(null)" :class="!current_date ? 'active' : ''" class="date-item">All</div>-->
         <div v-for="(ele) in count_by_date" :key="ele[0]" @click="loadList(ele[0])" class="date-item"
@@ -28,7 +35,7 @@
           <span class="count">{{ ele[1] }}</span>
         </div>
       </div>
-      <div class="col-2">
+      <div class="col-2 column">
         <div class="loading" v-if="loading_list">Loading...</div>
         <div class="articles" v-else>
           <div v-for="(article) in articles" :key="article.id" class="article" :class="current_article && current_article.id == article.id ? 'active' : ''"
@@ -48,13 +55,14 @@
         </div>
 
       </div>
-      <div class="col-6 col-article-content">
+      <div class="col-6 col-article-content column">
           <div id="article-title" v-if="current_article">{{current_article.title}}</div>
           <div v-if="loading_content" class="loading">Loading</div>
           <div v-else id="article-content" class="mt-3" v-html="article_content"></div>
-<!--        <button id="article-save-btn" class="btn btn-danger" @click="saveArticle">Save{{saving ? "..." : ""}}</button>-->
+        <button id="article-del-btn" class="btn btn-danger" @click="deleteArticle">Delete</button>
+
       </div>
-      <vocabulary-master class="col-3">
+      <vocabulary-master class="col-3 column">
       </vocabulary-master>
     </div>
     <edit-bar v-if="show_edit_bar"
@@ -82,6 +90,7 @@ import VocabularyMaster from "./components/VocabularyMaster";
 import loginApi from "../api/login"
 import articleApi from "../api/articles"
 import readApi from "../api/read"
+import vocabularyApi from "@/api/vocabulary";
 
 const rangyOptions = {exclusive: false};
 let rangy = {};
@@ -120,7 +129,10 @@ export default {
         "https://www.politics.co.uk/",
         "https://www.wired.co.uk",
         // "https://www.dailyrecord.co.uk/news/"
-      ]
+      ],
+      list_types: ["A1", "A2", "B1", "B2", "C1", "awl"],
+      current_list_type: "awl",
+      words: []
     }
   },
   created() {
@@ -179,6 +191,7 @@ export default {
     fetchArticle(){
       var that = this
       that.fetching = true
+      that.saveArticle()
       readApi.parse(this.fetch_url)
       // axios.get(config.BASE_URL+ "/parse?url=" + this.fetch_url)
           .then(res => {
@@ -270,10 +283,12 @@ export default {
     },
     clickTextColor(color){
       console.log("click text color: "+color)
+      this.article_edit = true
       this.highlighter.highlightSelection("jr-color-" + color, rangyOptions);
     },
     clickHighlightColor(color) {
       console.log("click highlight color: "+color)
+      this.article_edit = true
       this.highlighter.highlightSelection("jr-highlight-" + color, { exclusive: true });
     },
     saveArticle(){
@@ -340,20 +355,38 @@ export default {
       axios.get(article.url+"?t="+Math.random()).then(function (res) {
         // console.log(res.data);
         let html = res.data
-        // if (article.highlight != null) {
-        //   let words = article.highlight.split(",")
-        //   words = Array.from(new Set(words))
-        //   for (var i = 0; i < words.length; i++) {
-        //     let keyword = words[i]
-        //     html = html.split(keyword).join("<span class='jr-highlight-yellow'>" + keyword + "</span>")
-        //   }
-        // }
 
         that.article_content = html
         that.loading_content = false
         that.article_edit = false
       })
-    }
+    },
+    deleteArticle(){
+      articleApi.del(this.current_article.id).then(function (res) {
+        console.log(res.data);
+        this.loadList(this.current_date)
+      }).catch(function (err) {
+        console.log(err);
+      })
+    },
+    loadWordsList(){
+      var that = this
+      vocabularyApi.list(this.current_list_type)
+          .then(function(res) {
+            if (Array.isArray(res.data)) {
+              that.words = res.data
+            } else {
+              that.words = Object.keys(res.data)
+              // that.words_trans = res.data
+            }
+            console.log(that.words)
+          })
+    },
+    mark(){
+      let re = new RegExp(`\\b${this.words.join("\\b|\\b")}\\b`, 'gi');
+      this.article_content = this.article_content.replace(re, "<em>$&["+this.current_list_type+"]</em>")
+      this.article_edit = true
+    },
   }
 }
 </script>

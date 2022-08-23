@@ -5,18 +5,24 @@ function translate(query){
 }
 
 function examples(word){
-    return request.get("/example/en/"+word+".html")
+    return request.get("/api/examples/?lang=en&word="+word)
+    // return request.get("/example/en/"+word+".html")
     // return request.get("https://sentencedict.com/"+word+".html")
 }
 function examplesZh(word) {
-    return request.get("/example/zh-CN/"+word+".html")
+    return request.get("/api/examples/?lang=zh-CN&word="+word)
+    // return request.get("/example/zh-CN/"+word+".html")
 }
 function dictEn(word) {
-    return request.get("/dict/en/"+word+".html")
+    return request.get( "/api/dict?word="+word) //"/dict/en/"+word+".html")
 }
 
 function dictZh(word) {
     return request.get("/dict/zh-CN/"+word+".html")
+}
+
+function explanation(word) {
+    return request.get("/api/explanation?word="+word)
 }
 
 export default {
@@ -24,6 +30,7 @@ export default {
     examples,
     examplesZh,
     dictEn,
-    dictZh
+    dictZh,
+    explanation
 
 }

@@ -14,8 +14,13 @@ function create(data){
     return request.post("/api/articles", data)
 }
 
+function del(id){
+    return request.del("/api/articles/"+id)
+}
+
 export default {
     list,
     get,
     create,
+    del
 }

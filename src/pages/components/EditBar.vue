@@ -77,8 +77,6 @@ export default {
   data() {
     return {
       text_colors: [
-          "white",
-        "black",
         "yellow",
         "green",
         "blue",
@@ -86,10 +84,10 @@ export default {
         "pink",
         "red",
         "orange",
+        "white",
+        "black",
       ],
       highlight_colors: [
-          "white",
-          "black",
         "yellow",
         "green",
         "blue",
