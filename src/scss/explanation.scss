@@ -1,0 +1,54 @@
+#content {
+  position: relative;
+  .play-btn{
+    width: 1.2em;
+    //height:;
+    //background-color: lightgrey;
+  }
+  .play-btn:hover{
+    background-color: yellow;
+  }
+  #definition {
+    height: 30vh;
+    overflow-y: scroll;
+  }
+
+  #examples {
+    //border: 2px solid red;
+    .sentences{
+      div{
+
+        .play-btn{
+          width: 1.2em;
+          height: 1.2em;
+          float: left;
+          margin-top: .1em;
+          margin-right: .2em;
+          background-color: lightyellow;
+          //border: 1px solid red;
+        }
+        .play-btn:hover{
+          background-color: yellow;
+        }
+        span{
+          //color: red;
+          text-decoration: underline;
+          p{
+            margin-bottom: .2em !important;
+          }
+          em{
+            background: yellow !important;
+            color: red;
+          }
+        }
+      }
+
+    }
+    audio{display: none;}
+  }
+
+
+  audio {
+    display: none;
+  }
+}

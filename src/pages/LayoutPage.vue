@@ -11,6 +11,4 @@ export default {
 </script>
 
 <style scoped>
-@import "../css/bootstrap5.min.css";
-@import "../css/bootstrap5-grid.min.css";
 </style>

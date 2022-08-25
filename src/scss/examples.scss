@@ -1,18 +1,33 @@
 #examples {
   //border: 2px solid red;
-  .content{
-    p{
-      margin-bottom: .2em;
-    }
-    .play-btn{
-      width: 1.2em;
-      height: 1.2em;
-      float: left;
-      margin-top: .1em;
-      margin-right: .2em;
-      }
-    .play-btn:hover{width: 1.1em; height: 1.1em;}
-  }
+  .sentences{
+    div{
 
+      .play-btn{
+        width: 1.2em;
+        height: 1.2em;
+        float: left;
+        margin-top: .1em;
+        margin-right: .2em;
+        background-color: lightyellow;
+        //border: 1px solid red;
+      }
+      .play-btn:hover{
+        background-color: yellow;
+      }
+      span{
+        //color: red;
+        text-decoration: underline;
+        p{
+          margin-bottom: .2em !important;
+        }
+        em{
+          background: yellow !important;
+          color: red;
+        }
+      }
+    }
+
+  }
   audio{display: none;}
 }

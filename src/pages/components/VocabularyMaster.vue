@@ -30,7 +30,7 @@
         </div>
         <div id="meanings" v-if="dict_html" v-html="dict_html"></div>
 
-        <examples :word="current_word"></examples>
+<!--        <examples :word="current_word"></examples>-->
       </div>
       <div v-if="error">
         <hr>
@@ -46,12 +46,12 @@
 <script>
 // import axios from "axios";
 import transApi from "@/api/translate";
-import Examples from "@/pages/components/ExamplesPanel";
+// import Examples from "@/pages/components/ExamplesPanel";
 // import jsonp from "jsonp";
 // import BaiduTransApiSign from "../../api/baidu-trans-api-sign";
 export default {
   name: "VocabularyMaster",
-  components: {'examples': Examples},
+  // components: {'examples': Examples},
   data(){
     return {
       current_selected: null,
@@ -127,26 +127,10 @@ export default {
         req.then(res => {
           that.dict_html = res.data
         })
-        // transApi.examples(that.current_word).then(res => {
-        //   that.examples_en = res.data
-        // })
-        // axios.get("https://api.dictionaryapi.dev/api/v2/entries/en/" + that.current_word)
-        //     .then(function (res) {
-        //       var exp = res.data[0];
-        //       that.phonetics = exp.phonetics
-        //       that.meanings = exp.meanings
-        //     })
-        // axios.get("https://vocabulary-master.local/examples.php?word=" + that.current_word)
-
       }
     })
   },
   methods: {
-    // getExamples(){
-    //   console.log("click get Example")
-    //   var that = this
-    //
-    // }
     minimize_window() {
       this.maximize = false
     },
