@@ -13,9 +13,11 @@
 
     <div class="row p-1">
       <hr>
-      <img src="/imgs/music-32.png" class="play-btn" @click="audio_play(current_selected)">
-      {{ current_selected }}
-      <template v-if="word_count > 0">({{ word_count }} words)</template>
+      <div>
+        <img src="/imgs/music-32.png" class="play-btn" @click="audio_play(current_selected)">
+        {{ current_selected }}
+        <template v-if="word_count > 0">({{ word_count }} words)</template>
+      </div>
     </div>
 
     <div v-if="current_selected && word_count > 1 && trans_text" id="trans_text" class="row p-1">
@@ -28,7 +30,7 @@
       <div v-for="(dict,i) in dicts" v-html="dict" :key="i" class="col"></div>
     </div>
 
-    <div v-if="examples.length>0" id="examples" class="row p-1" >
+    <div v-if="word_count == 1 && examples.length>0" id="examples" class="row p-1" >
       <hr>
       <span>Examples: </span>
       <div class="sentences col" v-for="(example,i) in examples" :key="i">
@@ -64,6 +66,7 @@ export default {
       loading: false,
       lang_en: true,
       lang_zh: true,
+      langs: [],
       dicts: [],
       examples: [],
       // current_selected: null,
@@ -73,21 +76,27 @@ export default {
     }
   },
   methods: {
+    init(){
+      let langs = []
+      var that = this
+      if (that.lang_en) langs.push("en")
+      if (that.lang_zh) langs.push("zh-CN")
+      that.langs = langs
+
+      that.dicts = langs.length == 1 ? [[]] : [[],[]]
+      that.examples = langs.length == 1 ? [[]] : [[],[]]
+      // that.word_count = 0
+    },
     clickword(word) {
       if (word.length < 1) {
         return
       }
       var that = this
-      let langs = []
-      if (that.lang_en) langs.push("en")
-      if (that.lang_zh) langs.push("zh-CN")
-
-      that.dicts = langs.length == 1 ? [[]] : [[],[]]
-      that.examples = langs.length == 1 ? [[]] : [[],[]]
+      that.init()
       that.loading = true
 
       word = word.toLowerCase()
-      transApi.explanation(word, langs.join(",")).then(function (res) {
+      transApi.explanation(word, that.langs.join(",")).then(function (res) {
         that.dicts = res.data.dicts
         var examples_list = res.data.examples
         that.loading = false
@@ -113,13 +122,21 @@ export default {
           }
         }
 
+      }).catch(err => {
+        console.log(err)
+        that.loading = false
       })
     },
     translate(query) {
       var that = this
+      that.loading = true
       // axios.get("https://vocabulary-master.local/translate.php?query="+query)
       transApi.translate(query).then(function (res) {
         that.trans_text = res.data
+        that.loading = false
+      }).catch(err => {
+        console.log(err)
+        that.loading = false
       })
 
     },
@@ -147,9 +164,12 @@ export default {
     current_selected(val, oldVal) {
       if (val !== oldVal) {
         console.log(" ====== explanation panel, current selected change ====")
+        if (this.current_selected.length < 1) {
+          return
+        }
+        this.init()
         this.word_count = this.current_selected.split(" ").length
-        this.dicts = [[], []]
-        this.examples = []
+
         if (this.word_count > 1) {
           //  sentences selected
           console.log("selected length: " + this.current_selected.length)
@@ -157,7 +177,7 @@ export default {
             this.error = "Sentences selected too long!"
             this.trans_text = null
           } else {
-            this.translate(this.current_selected.replace(/\[[A-Z][0-9]\]/g, ""))
+            this.translate(this.current_selected.replace(/\[[A-Za-z0-9]+\]/g, ""))
             this.error = null
           }
         } else {

@@ -156,7 +156,9 @@ export default {
   },
   methods: {
     mouseupHandler() {
-      this.current_selected = window.getSelection().toString().trim()
+      let text = window.getSelection().toString().trim()
+      if (text.length > 0)
+        this.current_selected = text
     },
     login(){
       // var router = useRouter();
@@ -269,8 +271,11 @@ export default {
           })
     },
     mark(){
-      let re = new RegExp(`\\b${this.words.join("\\b|\\b")}\\b`, 'gi');
-      this.article_content = this.article_content.replace(re, "<em>$&["+this.current_list_type+"]</em>")
+      if (this.words.length < 1) {
+        return
+      }
+      let re = new RegExp(`(?<=>[^<]*)(\\b${this.words.join("\\b|\\b")}\\b)`, 'gi');
+      this.article_content = this.article_content.replace(re, "<em>$1["+this.current_list_type+"]</em>")
       this.article_edit = true
     },
   }

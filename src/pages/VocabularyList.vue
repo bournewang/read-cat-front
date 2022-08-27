@@ -71,8 +71,8 @@ import vocabularyApi from "@/api/vocabulary";
 // import Loading from "@/pages/components/LoadingStatus";
 import 'mdb-vue-ui-kit/css/mdb.min.css';
 import ExplanationPanel from "@/pages/components/ExplanationPanel";
-// import 'bootstrap/dist/css/bootstrap.css'
-// import 'bootstrap/dist/js/bootstrap.bundle.js'
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap/dist/js/bootstrap.bundle.js'
 
 export default {
   components: {"explanation-panel": ExplanationPanel},
@@ -80,7 +80,7 @@ export default {
     return {
       counter: 0,
       words: [],
-      list_types: ["A1", "A2", "B1", "B2", "C1", "C1-1", "C1-2", "awl", "Listening"],
+      list_types: ["A1", "A2", "B1", "B2", "C1", "C1-1", "C1-2", "C1-3", "C1-4", "C1-5", "C1-6", "C1-7", "awl", "Listening"],
       current_list_type: "awl",
       mastered_words: [],
       current_selected: "",

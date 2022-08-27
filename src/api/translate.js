@@ -21,8 +21,8 @@ function dictZh(word) {
     return request.get("/dict/zh-CN/"+word+".html")
 }
 
-function explanation(word) {
-    return request.get("/api/explanation?word="+word)
+function explanation(word, langs) {
+    return request.get("/api/explanation?word="+word+"&langs="+langs)
 }
 
 export default {
