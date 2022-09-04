@@ -2,7 +2,7 @@
   <div class="wrapper container-fluid">
     <div class="row pt-3" id="upper-row">
       <div class="col-3"><h1 class="title">Read Cat</h1></div>
-      <div class="col-6" >
+      <div class="col-4" >
         <input type="text" v-model="fetch_url" placeholder="Copy the article url here, and click [Fetch] button">
         <button class="btn btn-sm btn-primary" @click="fetchArticle">Fetch</button>
         <span v-if="fetching">Fetching ...</span>
@@ -11,13 +11,12 @@
         {{current_user.email}}
         <button class="btn btn-sm btn-danger" @click="logout">Logout</button>
 
-        <button @click="$router.push('/vocabulary-list')">Vocabulary List</button>
-
         <select @change="loadWordsList" v-model="current_list_type">
           <option v-for="type in list_types" :value="type" :key="type">{{type}}</option>
         </select>
         <button @click="mark">Mark</button>
       </div>
+      <div class="col-2"><router-link to="/vocabulary-list">Vocabulary List</router-link></div>
     </div>
     <div class="row websites">
       <div class="col-12">
@@ -56,17 +55,22 @@
 
       </div>
       <div class="col-6 col-article-content column">
-          <div id="article-title" v-if="current_article">{{current_article.title}}</div>
-          <div v-if="loading_content" class="loading">Loading</div>
-          <div v-else id="article-content" class="mt-3" v-html="article_content"></div>
+<!--          <div id="article-body">-->
+            <div id="article-title" v-if="current_article">{{current_article.title}}</div>
+            <div v-if="loading_content" class="loading">Loading</div>
+            <div v-else id="article-content" class="mt-3" v-html="article_content"></div>
+<!--          </div>-->
+          <div id="article-words">
+            {{marked_words.join(", ")}}
+          </div>
         <button id="article-del-btn" class="btn btn-danger" @click="deleteArticle">Delete</button>
 
       </div>
 <!--      <vocabulary-master class="col-3 column">-->
 <!--      </vocabulary-master>-->
-      <explanation-panel class="col-3" :current_selected="current_selected"></explanation-panel>
+      <explanation-panel class="col-3" :current_selected="current_selected" :multi_langs="false"></explanation-panel>
     </div>
-    <edit-bar @article_edit="article_edit=true"/>
+    <edit-bar @article_edit="article_edit=true; refresh_marked_words()"/>
   </div>
 </template>
 <script>
@@ -119,6 +123,7 @@ export default {
       ],
       list_types: ["A1", "A2", "B1", "B2", "C1", "awl"],
       current_list_type: "awl",
+      marked_words: [],
       words: []
     }
   },
@@ -236,6 +241,7 @@ export default {
       console.log("load article ")
       var that = this
       this.loading_content = true
+      this.marked_words = []
       this.saveArticle()
       this.current_article = article
       axios.get(article.url+"?t="+Math.random()).then(function (res) {
@@ -245,6 +251,7 @@ export default {
         that.article_content = html
         that.loading_content = false
         that.article_edit = false
+        that.refresh_marked_words()
       })
     },
     deleteArticle(){
@@ -277,7 +284,32 @@ export default {
       let re = new RegExp(`(?<=>[^<]*)(\\b${this.words.join("\\b|\\b")}\\b)`, 'gi');
       this.article_content = this.article_content.replace(re, "<em>$1["+this.current_list_type+"]</em>")
       this.article_edit = true
+
+      this.refresh_marked_words()
     },
+    refresh_marked_words(){
+    //  call refresh marked words 500 ms
+      let that = this
+      setTimeout(function () {
+        let marks = document.querySelectorAll('[class*="jr-"], em');
+        let marked_words = []
+        marks.forEach(function (mark) {
+          if (!mark.textContent) return;
+          marked_words.push(mark.textContent.toLowerCase())
+        });
+        //remove same element in marked_words
+        marked_words = Array.from(new Set(marked_words))
+        that.marked_words = marked_words
+
+      }, 500)
+    }
+  },
+  watch: {
+  },
+  beforeUnmount() {
+    console.log("======= before unmount")
+
+    this.saveArticle();
   }
 }
 </script>

@@ -2,6 +2,7 @@
 
   <header>
     <h1>Academic Word List exercise</h1>
+    <router-link to="/">Main</router-link>
     <!--    <span>The Academic Word List (AWL) is a list of 570 of the most common academic words found in academic texts. Below is the full word list.</span>-->
 
     <select @change="loadWordsList" v-model="current_list_type">
@@ -15,7 +16,7 @@
   <hr>
   <div class="container-fluid">
     <div class="row">
-      <div class="col-3">
+      <div class="col-lg-2 col-md-3">
         <ul class="nav nav-tabs" id="words-tab">
           <li class="nav-item">
             <a href="#words-all" class="nav-link active" data-bs-toggle="tab">AWL</a>
@@ -56,8 +57,8 @@
 
       </div>
 
-      <div class="col-9 ">
-       <explanation-panel :current_selected="current_selected"></explanation-panel>
+      <div class="col-lg-10 col-md-9">
+       <explanation-panel :current_selected="current_selected" :multi_langs="true"></explanation-panel>
       </div>
 
 

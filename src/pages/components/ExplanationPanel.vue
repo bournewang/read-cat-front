@@ -1,14 +1,14 @@
 <template>
   <div id="content">
     <div>
-      LANG:
-      <input type="checkbox" value="en" v-model="lang_en">EN
-      <input type="checkbox" value="zh-CN" v-model="lang_zh">ZH
+      <div id="langs-wrap">
+        LANGS:
+        <label v-for="(label,val) in support_langs" class="m-lg-2" :key="val">
+          <input :type="multi_langs ? 'checkbox' : 'radio'" name="langs" v-model="langs"  :key="val" :value="val" @change="langChange"/>{{ label }}
+        </label>
 
-      <button @click="autoplay=!autoplay" class="btn btn-sm ms-3"
-              :class="autoplay ? 'btn-info' : 'btn-primary'">
-        {{ autoplay ? "Disable" : "Enable" }} Autoplay
-      </button>
+        <input type="checkbox" v-model="autoplay" id="autoplay" class="m-lg-2"><label for="autoplay">Autoplay</label>
+      </div>
     </div>
 
     <div class="row p-1">
@@ -16,7 +16,7 @@
       <div>
         <img src="/imgs/music-32.png" class="play-btn" @click="audio_play(current_selected)">
         {{ current_selected }}
-        <template v-if="word_count > 0">({{ word_count }} words)</template>
+        <div v-if="word_count > 1">({{ word_count }} words)</div>
       </div>
     </div>
 
@@ -58,15 +58,17 @@ export default {
   name: "ExplanationPanel",
   components: {'loading': LoadingStatus},
   props: {
+    multi_langs: {type: Boolean, default: false},
     current_selected: {type: String, default: null},
   },
   data() {
     return {
       autoplay: true,
       loading: false,
+      support_langs: {"en": "EN", "zh-CN": "简中"},
       lang_en: true,
       lang_zh: true,
-      langs: [],
+      langs: this.multi_langs ? ['en', 'zh-CN'] : 'zh-CN',
       dicts: [],
       examples: [],
       // current_selected: null,
@@ -77,15 +79,17 @@ export default {
   },
   methods: {
     init(){
-      let langs = []
       var that = this
-      if (that.lang_en) langs.push("en")
-      if (that.lang_zh) langs.push("zh-CN")
-      that.langs = langs
-
-      that.dicts = langs.length == 1 ? [[]] : [[],[]]
-      that.examples = langs.length == 1 ? [[]] : [[],[]]
-      // that.word_count = 0
+      that.dicts = [[]]
+      that.examples = [[]]
+      if (Array.isArray(this.langs) && this.langs.length > 1) {
+        that.dicts = [[],[]]
+        that.examples = [[],[]]
+      }
+    },
+    langChange(){
+      console.log("langs change: ")
+      console.log(this.langs)
     },
     clickword(word) {
       if (word.length < 1) {
@@ -96,7 +100,8 @@ export default {
       that.loading = true
 
       word = word.toLowerCase()
-      transApi.explanation(word, that.langs.join(",")).then(function (res) {
+      let langs = Array.isArray(that.langs) ? that.langs.join(",") : that.langs
+      transApi.explanation(word, langs).then(function (res) {
         that.dicts = res.data.dicts
         var examples_list = res.data.examples
         that.loading = false
@@ -130,6 +135,7 @@ export default {
     translate(query) {
       var that = this
       that.loading = true
+      that.trans_text = null
       // axios.get("https://vocabulary-master.local/translate.php?query="+query)
       transApi.translate(query).then(function (res) {
         that.trans_text = res.data

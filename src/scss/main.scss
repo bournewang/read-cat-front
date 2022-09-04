@@ -95,17 +95,35 @@
 
     .col-article-content{
       position: relative;
+      //#article-body{
+      //  height: 90%;
+        overflow-y: hidden;
       #article-title{
+        height: 10%;
+        overflow-y: scroll;
         font-size: 1.5em;
         font-family: system-ui, sans-serif;
         font-weight: 500;
       }
       #article-content{
         font-size: 1.2em;
-        img{
-          max-width: 100%;
-        }
+        img{max-width: 100%;}
         em{background: yellow;}
+        //padding-bottom: 7em;
+        height: 80%;
+        overflow-y: scroll;
+        border: 2px solid red;
+      }
+      //}
+      #article-words {
+        height: 10%;
+        overflow-y: scroll;
+        width: 48%;
+        padding: 0.2em;
+        position: fixed;
+        bottom: 0;
+        background: lightgreen;
+        font-size: 1.1em;
       }
     }
 

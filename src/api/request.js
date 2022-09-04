@@ -10,16 +10,7 @@ function get(url){
 
     return axios.get(url.startsWith("http") ? url :  config.BASE_URL+ url,
         {headers: headers}
-    ).catch(error => {
-        console.log("catch error =======")
-        if (error.response.data.error == "Unauthorized") {
-            console.log("====unauthorized , clear token")
-            loginApi.clearToken()
-            window.location.href = window.location.href
-        }
-    }).catch(error => {
-        console.log(error)
-    })
+    )
 }
 
 function post(url, data){
@@ -33,13 +24,24 @@ function post(url, data){
         if (error.response.data.error == "Unauthorized") {
             console.log("====unauthorized , ")
             loginApi.clearToken()
-            window.location.href = window.location.href
+            // window.location.href = window.location.href
         }
     }).catch(error => {
         console.log(error)
     })
 }
+
+//delete delete of axios with headers
+function del(url){
+    let token = loginApi.token()
+    var headers = {'Authorization': 'Bearer '+token}
+    return axios.delete(config.BASE_URL+ url,
+        {headers: headers}
+    )
+}
+
 export default {
     get,
-    post
+    post,
+    del
 }

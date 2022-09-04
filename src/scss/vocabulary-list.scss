@@ -6,7 +6,7 @@
 //.examples {max-height: 50vh; font-size: 1.2em;}
 //#all div:nth-child(n+11) {display: none;}
 //span.delete{text-decoration: line-through;}
-//span.current{background: #4cae4c; color: whitesmoke;}
+//
 //span.phonetic {padding-right: 1em;}
 //span.partOfSpeech {color: darkred;}
 //.synonyms {color: darkcyan;}
@@ -17,8 +17,12 @@
 //.examples .play-btn{margin-top: 5px;margin-right: 5px;}
 
 .container-fluid{
+  font-size: 1.2em;
   #left-column{
     height: 80vh;overflow-y: scroll;
+    ul.word-list{
+      span.current{background: #4cae4c; color: whitesmoke;}
+    }
   }
 
   //.play-btn{
