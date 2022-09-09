@@ -112,18 +112,42 @@
         //padding-bottom: 7em;
         height: 80%;
         overflow-y: scroll;
-        border: 2px solid red;
+        //border: 2px solid red;
+
+        .current-marked{
+          //text-decoration: underline;
+          font-size: 1.2em;
+          font-weight: bold;
+          font-style: normal;
+          background-color: tomato;
+        }
       }
       //}
       #article-words {
-        height: 10%;
-        overflow-y: scroll;
+        //height: 10%;
+        //overflow-y: scroll;
         width: 48%;
-        padding: 0.2em;
+        //padding: 0.2em;
         position: fixed;
         bottom: 0;
-        background: lightgreen;
+
         font-size: 1.1em;
+
+        #toggle{
+          //position: absolute;
+          //top: 0em;
+          //right: 0;
+          background: lightgoldenrodyellow;
+          border-radius: 0;
+          box-shadow: none;
+          float: right;
+        }
+        #article-words-content{
+            height: 100%;
+            overflow-y: scroll;
+            //border: 2px solid red;
+            background: lightgoldenrodyellow;
+        }
       }
     }
 
@@ -143,9 +167,9 @@
     bottom: 5em;
   }
 
-  #article-del-btn{
+  #article-del-btn1{
     position: absolute;
     top: 3em;
-    right: 1em;
+    right: .5em;
   }
 }

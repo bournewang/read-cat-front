@@ -1,22 +1,13 @@
 <template>
   <div class="wrapper container-fluid">
-    <div class="row pt-3" id="upper-row">
+    <div class="row pt-3" id="upper-row" v-if="0">
       <div class="col-3"><h1 class="title">Read Cat</h1></div>
       <div class="col-4" >
         <input type="text" v-model="fetch_url" placeholder="Copy the article url here, and click [Fetch] button">
         <button class="btn btn-sm btn-primary" @click="fetchArticle">Fetch</button>
         <span v-if="fetching">Fetching ...</span>
       </div>
-      <div class="col-3">
-        {{current_user.email}}
-        <button class="btn btn-sm btn-danger" @click="logout">Logout</button>
-
-        <select @change="loadWordsList" v-model="current_list_type">
-          <option v-for="type in list_types" :value="type" :key="type">{{type}}</option>
-        </select>
-        <button @click="mark">Mark</button>
-      </div>
-      <div class="col-2"><router-link to="/vocabulary-list">Vocabulary List</router-link></div>
+<!--      <div class="col-2"><router-link to="/vocabulary-list">Vocabulary List</router-link></div>-->
     </div>
     <div class="row websites">
       <div class="col-12">
@@ -25,13 +16,13 @@
       </div>
     </div>
     <div class="row" id="body-row">
-      <div class="col-1 date-range column">
+      <div class="col-lg-1 col-md-2 date-range column">
         <!--        show the last week-->
 <!--        <div @click="loadList(null)" :class="!current_date ? 'active' : ''" class="date-item">All</div>-->
         <div v-for="(ele) in count_by_date" :key="ele[0]" @click="loadList(ele[0])" class="date-item"
              :class="current_date == ele[0] ? 'active' : ''">
           <span class="date">{{ ele[0] }}</span>
-          <span class="count">{{ ele[1] }}</span>
+          <span class="count badge rounded-pill bg-danger text-white">{{ ele[1] }}</span>
         </div>
       </div>
       <div class="col-2 column">
@@ -54,21 +45,42 @@
         </div>
 
       </div>
-      <div class="col-6 col-article-content column">
+      <div class="col-lg-6 col-md-5 col-article-content column">
 <!--          <div id="article-body">-->
-            <div id="article-title" v-if="current_article">{{current_article.title}}</div>
+            <div id="article-title" class="row">
+              <span v-if="current_article" class="col-11">{{current_article.title}}</span>
+              <div class="col-1"><button id="article-del-btn" class="btn btn-danger mr-3 mt-2" @click="deleteArticle">
+                <font-awesome-icon icon="trash" />
+              </button></div>
+            </div>
             <div v-if="loading_content" class="loading">Loading</div>
-            <div v-else id="article-content" class="mt-3" v-html="article_content"></div>
+            <div v-else id="article-content" class="pe-3 pb-5" v-html="article_content"></div>
 <!--          </div>-->
-          <div id="article-words">
-            {{marked_words.join(", ")}}
+          <div id="article-words" v-if="marked_words.length > 0">
+<!--            {{marked_words.join(", ")}}-->
+            <div>
+              <button id="toggle" @click="toggleMarkedWords" class="btn btn-sml float-end pt-0 pb-0">
+                <font-awesome-icon :icon="marked_words_style ? 'chevron-up' : 'chevron-down'" />
+              </button>
+              <div class="clearfix"></div>
+            </div>
+            <div id="article-words-content" class="p-2" :style="marked_words_style">
+              <span class="mr-2" v-for="(word) in marked_words" :key="word" @click="goAnchor(word)">{{word}}, </span>
+            </div>
           </div>
-        <button id="article-del-btn" class="btn btn-danger" @click="deleteArticle">Delete</button>
 
       </div>
-<!--      <vocabulary-master class="col-3 column">-->
-<!--      </vocabulary-master>-->
-      <explanation-panel class="col-3" :current_selected="current_selected" :multi_langs="false"></explanation-panel>
+      <div class="col-3">
+        <div>
+          <select @change="loadWordsList" v-model="current_list_type">
+            <option v-for="type in list_types" :value="type" :key="type">{{type}}</option>
+          </select>
+          <button @click="mark">Mark</button>
+
+        </div>
+        <explanation-panel :current_selected="current_selected" :multi_langs="false"></explanation-panel>
+      </div>
+
     </div>
     <edit-bar @article_edit="article_edit=true; refresh_marked_words()"/>
   </div>
@@ -79,10 +91,10 @@ import EditBar from "./components/EditBar";
 // import VocabularyMaster from "./components/VocabularyMaster";
 import ExplanationPanel from "@/pages/components/ExplanationPanel";
 // import config from "../config";
-import loginApi from "../api/login"
 import articleApi from "../api/articles"
 import readApi from "../api/read"
 import vocabularyApi from "@/api/vocabulary";
+import common from "@/common";
 
 export default {
   name: "MainPage",
@@ -111,7 +123,6 @@ export default {
       edit_bar_pos: "",
       show_text_colors: true,
       show_bg_colors: true,
-      current_user: {},
       eng_sites: [
         "https://www.telegraph.co.uk/",
         "https://www.mirror.co.uk/",
@@ -124,18 +135,9 @@ export default {
       list_types: ["A1", "A2", "B1", "B2", "C1", "awl"],
       current_list_type: "awl",
       marked_words: [],
+      marked_words_style: null,
+      current_marked: null,
       words: []
-    }
-  },
-  created() {
-    console.log("vue created =====")
-  //  check login
-    console.log("login token: "+loginApi.token())
-    if (!loginApi.token()) {
-      console.log("token is null, goto login")
-      this.$router.push("/login")
-    }else{
-      console.log("token is not null, continue")
     }
   },
   mounted() {
@@ -153,10 +155,6 @@ export default {
     window.addEventListener("mouseup", this.mouseupHandler)
 
     this.refreshDate()
-    var userstr = localStorage.getItem("user")
-    if (userstr != null) {
-      this.current_user = JSON.parse(userstr)
-    }
     // axios.get(config.BASE_URL+ "/count_by_date").then(res => )
   },
   methods: {
@@ -168,10 +166,6 @@ export default {
     login(){
       // var router = useRouter();
       this.$router.push('/login')
-    },
-    logout(){
-      loginApi.logout()
-      this.login()
     },
     refreshDate(){
       var that = this
@@ -255,11 +249,12 @@ export default {
       })
     },
     deleteArticle(){
+      if (!confirm("Are you sure to delete this article?")) return
       var that = this
       articleApi.del(this.current_article.id).then(function (res) {
         console.log(res.data);
-        // that.loadList(this.current_date)
-        that.refreshDate()
+        that.loadList(that.current_date)
+        // that.refreshDate()
       }).catch(function (err) {
         console.log(err);
       })
@@ -282,7 +277,7 @@ export default {
         return
       }
       let re = new RegExp(`(?<=>[^<]*)(\\b${this.words.join("\\b|\\b")}\\b)`, 'gi');
-      this.article_content = this.article_content.replace(re, "<em>$1["+this.current_list_type+"]</em>")
+      this.article_content = this.article_content.replace(re, "<em id='em-$1'>$1["+this.current_list_type+"]</em>")
       this.article_edit = true
 
       this.refresh_marked_words()
@@ -290,18 +285,47 @@ export default {
     refresh_marked_words(){
     //  call refresh marked words 500 ms
       let that = this
+      // set timeout to let article_content update to dom
       setTimeout(function () {
         let marks = document.querySelectorAll('[class*="jr-"], em');
         let marked_words = []
         marks.forEach(function (mark) {
           if (!mark.textContent) return;
-          marked_words.push(mark.textContent.toLowerCase())
+          // let id= mark.getAttribute("id")
+          // if (id ){
+          // FIXME, no need in production
+          mark.setAttribute("id", common.string_prehandle(mark.textContent))
+          // }
+          marked_words.push(mark.textContent)
         });
         //remove same element in marked_words
         marked_words = Array.from(new Set(marked_words))
         that.marked_words = marked_words
 
       }, 500)
+    },
+    toggleMarkedWords(){
+      this.marked_words_style = this.marked_words_style ? null : "height: 5em;"
+    },
+    goAnchor(e) {
+      let word = common.string_prehandle(e)
+      let mark = document.querySelector('#'+word);
+      // if (!mark) {
+      //   mark = document.querySelector("#em-" + word);
+      // }
+      if (!mark) return
+
+      if (this.current_marked)
+        this.current_marked.classList.remove("current-marked")
+
+      mark.classList.add("current-marked")
+      this.current_marked = mark
+
+      mark.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+        inline: "nearest",
+      })
     }
   },
   watch: {

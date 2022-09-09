@@ -16,7 +16,7 @@
   <hr>
   <div class="container-fluid">
     <div class="row">
-      <div class="col-lg-2 col-md-3">
+      <div class="col-lg-3 col-md-3">
         <ul class="nav nav-tabs" id="words-tab">
           <li class="nav-item">
             <a href="#words-all" class="nav-link active" data-bs-toggle="tab">AWL</a>
@@ -57,7 +57,7 @@
 
       </div>
 
-      <div class="col-lg-10 col-md-9">
+      <div class="col-lg-9 col-md-9">
        <explanation-panel :current_selected="current_selected" :multi_langs="true"></explanation-panel>
       </div>
 

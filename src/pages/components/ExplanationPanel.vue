@@ -28,6 +28,9 @@
     <div v-if="current_selected && word_count == 1" class="row p-1" id="definition">
       <hr>
       <div v-for="(dict,i) in dicts" v-html="dict" :key="i" class="col"></div>
+      <div class="mt-3 text-danger" v-if="dicts.length < 1">
+        -
+      </div>
     </div>
 
     <div v-if="word_count == 1 && examples.length>0" id="examples" class="row p-1" >
@@ -39,10 +42,13 @@
           <span v-html="sentence.innerHTML"></span>
         </div>
       </div>
+      <div class="mt-3 text-danger" v-if="examples[0] && examples[0].length < 1" >
+        -
+      </div>
     </div>
     <div v-if="error">
       <hr>
-      <span class="text text-bg-danger">{{ error }}</span>
+      <span class="mt-3 text-danger">{{ error }}</span>
     </div>
 
     <loading v-if="loading"></loading>
@@ -173,6 +179,7 @@ export default {
         if (this.current_selected.length < 1) {
           return
         }
+        this.error = null
         this.init()
         this.word_count = this.current_selected.split(" ").length
 
@@ -184,7 +191,6 @@ export default {
             this.trans_text = null
           } else {
             this.translate(this.current_selected.replace(/\[[A-Za-z0-9]+\]/g, ""))
-            this.error = null
           }
         } else {
           this.clickword(this.current_selected)

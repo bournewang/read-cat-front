@@ -9,6 +9,9 @@
     "start": "vue-cli-service serve --open"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.2.0",
+    "@fortawesome/free-solid-svg-icons": "^6.2.0",
+    "@fortawesome/vue-fontawesome": "^3.0.0-5",
     "axios": "^0.27.2",
     "bootstrap5": "^1.1.9",
     "core-js": "^3.8.3",

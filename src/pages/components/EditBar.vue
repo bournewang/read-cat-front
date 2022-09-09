@@ -69,6 +69,7 @@
 
 <script>
 // import axios from 'axios';
+import common from "@/common";
 const rangyOptions = {exclusive: false};
 let rangy = {};
 export default {
@@ -101,6 +102,7 @@ export default {
 
       highlighter: null,
       show_edit_bar: false,
+      current_select: "",
       edit_bar_pos: ""
     }
   },
@@ -127,6 +129,7 @@ export default {
       }
       // this.show_text_colors = false
       // this.show_bg_colors = false
+      this.current_select = sel;
       console.log("=== mouse up, selection: " + sel)
       const r = rangy.getSelection().nativeSelection.getRangeAt(0).getBoundingClientRect();
       const top = (r.top + document.defaultView.pageYOffset - 60 - 30) + 'px';
@@ -141,7 +144,7 @@ export default {
 
       const rangeOptions = {
         onElementCreate: elem => {
-          elem.id = 'jr-' + Date.now();
+          elem.id = 'jr-' + common.string_prehandle(this.current_select) //.replaceAll(" ","-") //.toLowerCase() //Date.now();
           // hasSavedLink = false;
           // shareDropdown.classList.remove("active");
           // setTimeout(() => updateSavedVersion(), 10);
