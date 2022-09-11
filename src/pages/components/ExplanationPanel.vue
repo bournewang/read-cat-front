@@ -86,7 +86,7 @@ export default {
   methods: {
     init(){
       var that = this
-      that.dicts = [[]]
+      that.dicts = []
       that.examples = [[]]
       if (Array.isArray(this.langs) && this.langs.length > 1) {
         that.dicts = [[],[]]

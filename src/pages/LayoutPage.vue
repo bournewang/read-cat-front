@@ -3,11 +3,13 @@
     <div class="d-flex flex-row align-items-center border-2 border-primary">
       <h1 class="">IELTS READING GURU</h1>
       <div class="flex-grow-1"></div>
-      <router-link to="/" class="pe-3">Reading</router-link>
+      <router-link to="/library" class="pe-3">Library</router-link>
+      <router-link to="/review" class="pe-3">Review</router-link>
       <router-link to="/vocabulary-list" class="pe-3 ">Vocabulary</router-link>
+      <router-link to="/new-article" class="pe-3"><font-awesome-icon icon="plus"/></router-link>
+
       {{current_user.username}}
       <button class="btn btn-sm btn-danger" @click="logout">Logout</button>
-
 
       <div class="clearfix"></div>
     </div>

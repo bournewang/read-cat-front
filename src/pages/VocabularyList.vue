@@ -1,15 +1,8 @@
 <template>
 
-  <header>
+  <header v-if="0">
     <h1>Academic Word List exercise</h1>
     <router-link to="/">Main</router-link>
-    <!--    <span>The Academic Word List (AWL) is a list of 570 of the most common academic words found in academic texts. Below is the full word list.</span>-->
-
-    <select @change="loadWordsList" v-model="current_list_type">
-      <option v-for="type in list_types" :value="type" :key="type">{{ type }}</option>
-    </select>
-
-    <!--    <v-select v-model="current_list_type" :options="list_types" @change="wordListChange"/>-->
 
     <div class="clearfix"></div>
   </header>
@@ -58,7 +51,12 @@
       </div>
 
       <div class="col-lg-9 col-md-9">
-       <explanation-panel :current_selected="current_selected" :multi_langs="true"></explanation-panel>
+        <div class="my-3">
+          <select @change="loadWordsList" v-model="current_list_type">
+            <option v-for="type in list_types" :value="type" :key="type">{{ type }}</option>
+          </select>
+        </div>
+        <explanation-panel :current_selected="current_selected" :multi_langs="true"></explanation-panel>
       </div>
 
 
