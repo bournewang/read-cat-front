@@ -14,6 +14,18 @@ function create(data){
     return request.post("/api/articles", data)
 }
 
+function createFromEssay(essay){
+    return request.post("/api/articles-from-essay", essay)
+}
+
+function getAllReadEssays(){
+    return request.get("/api/get-all-read-essays")
+}
+
+function getByEssayId(essayId){
+    return request.get("/api/articles/findByEssayId/"+essayId)
+}
+
 function del(id){
     return request.del("/api/articles/"+id)
 }
@@ -26,6 +38,9 @@ export default {
     list,
     get,
     create,
+    createFromEssay,
+    getAllReadEssays,
+    getByEssayId,
     update,
     del
 }

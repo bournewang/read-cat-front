@@ -163,7 +163,7 @@ export default {
     audio_url(text) {
       if (!text)
         return null
-      return 'https://dict.youdao.com/dictvoice?type=1&audio=' + text.replace(/\s*(\n)?\s*\(?\d+\)?\.?\s+/, "").replace(/\s*(\n)?\s*$/, "")
+      return 'https://dict.youdao.com/dictvoice?type=1&audio=' + text.replace(/\s*(\n)?\s*\(?\d+\)?\.?\s+/, "").replaceAll(/\s*(\n)?\s*$/g, "").replaceAll(/\[\w+\d?\]/g, "")
     },
   },
   computed: {

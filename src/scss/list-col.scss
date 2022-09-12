@@ -1,0 +1,17 @@
+.list-col{
+  .list-item{
+    &.active{background: lightskyblue;}
+    padding: .5em .2em;
+    .text{
+      padding: .2em;
+      font-size: .8em;
+      font-weight: 700;
+    }
+    .count{
+      color: darkred;
+      float: right;
+      display: block;
+    }
+    //border-right: 1px solid lightgray;
+  }
+}

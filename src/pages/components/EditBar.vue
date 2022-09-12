@@ -103,7 +103,8 @@ export default {
       highlighter: null,
       show_edit_bar: false,
       current_select: "",
-      edit_bar_pos: ""
+      edit_bar_pos: "",
+      position: null
     }
   },
   created() {
@@ -223,4 +224,5 @@ export default {
 </script>
 
 <style lang="css" scoped>
+@import "../../css/reader.css";
 </style>
